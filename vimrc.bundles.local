@@ -1,0 +1,33 @@
+" color
+Plug 'altercation/vim-colors-solarized'
+
+" powerline
+"Plug 'Lokaltog/vim-powerline'
+"Plug 'stephenmckinney/vim-solarized-powerline'
+
+" Ag
+Plug 'rking/ag.vim'
+
+" Comment
+Plug 'scrooloose/nerdcommenter'
+
+" JS hint
+Plug 'shutnik/jshint2.vim'
+
+" Robocop
+Plug 'ngmy/vim-rubocop'
+
+" YouComepleteMe
+Plug 'Valloric/YouCompleteMe'
+
+" Nerd Tree
+Plug 'scrooloose/nerdtree'
+
+" Ctrl-P
+Plug 'kien/ctrlp.vim'
+
+" Fugitive
+Plug 'tpope/vim-fugitive'
+
+" syntastic
+Plug 'scrooloose/syntastic'

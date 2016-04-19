@@ -1,0 +1,11 @@
+eval "$(direnv hook zsh)"
+source ~/.bin/tmuxinator.zsh
+
+# The next line updates PATH for the Google Cloud SDK.
+source '/Users/wei/google-cloud-sdk/path.zsh.inc'
+
+# The next line enables shell command completion for gcloud.
+source '/Users/wei/google-cloud-sdk/completion.zsh.inc'
+
+export NVM_DIR="/Users/wei/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm

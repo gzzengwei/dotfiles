@@ -1,0 +1,34 @@
+" text width
+set textwidth=120
+
+" Color scheme
+set background=dark
+let g:solarized_visibility = "high"
+let g:solarized_contrast = "high"
+let g:solarized_termcolors=16
+colorscheme solarized
+
+" xmpfilter mapping
+map <F4> <Plug>(xmpfilter-mark)
+map <F5> <Plug>(xmpfilter-run)
+
+" paste and re-yank last yank 
+xnoremap p pgvy
+
+" bind K to grep word under cursor
+nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+
+" map NERDTreeFind
+map <leader>r :NERDTreeFind<cr>
+
+" map shortcuts
+map <C-s> <esc>:w<CR>
+imap <C-s> <esc>:w<CR>
+map <C-t> <esc>:tabnew<CR>
+map <C-q> <esc>:qa!<CR>
+imap <C-q> <esc>:qa!<CR>
+map <C-v> <esc>"+p
+map <C-y> "+y
+
+" Python
+let g:python_host_prog = '/usr/local/bin/python'
