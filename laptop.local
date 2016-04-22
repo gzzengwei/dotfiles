@@ -1,0 +1,55 @@
+#!/bin/sh
+
+brew bundle --file=- <<EOF
+cask_args appdir: '/Applications'
+
+# Mac Apps
+cask "alfred"
+cask "iterm2"
+cask "sublime-text"
+cask "atom"
+cask "virtualbox"
+cask "vagrant"
+cask "google-chrome"
+cask "firefox"
+cask "skype"
+cask "dropbox"
+cask "slack"
+cask "macdown"
+
+# Docker
+brew "docker"
+brew "docker-compose"
+brew "docker-machine"
+brew "docker-swarm"
+
+# Language
+brew "elixir"
+brew "go"
+
+# libs
+brew "zeromq"
+brew "zbar"
+brew "libxml2"
+brew "libxslt"
+
+# tools
+brew "htop"
+brew "tig"
+brew "direnv"
+tap "neovim/neovim"
+brew "neovim"
+brew "p7zip"
+brew "ack"
+brew "tree"
+brew "pandoc"
+EOF
+
+echo "Cleaning up old Homebrew formulae ..."
+brew cleanup
+brew cask cleanup
+
+if [ -r "$HOME/.rcrc" ]; then
+  fancy_echo "Updating dotfiles ..."
+  rcup
+fi

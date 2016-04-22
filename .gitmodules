@@ -1,0 +1,3 @@
+[submodule "laptop"]
+	path = laptop
+	url = git@github.com:thoughtbot/laptop.git
