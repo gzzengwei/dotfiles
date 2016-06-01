@@ -23,6 +23,12 @@ brew "docker-compose"
 brew "docker-machine"
 brew "docker-swarm"
 
+# DevOps
+brew "awscli"
+brew "ansible"
+brew "terraform"
+
+
 # Language
 brew "elixir"
 brew "go"
