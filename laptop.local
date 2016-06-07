@@ -17,17 +17,11 @@ cask "dropbox"
 cask "slack"
 cask "macdown"
 
-# Docker
-brew "docker"
-brew "docker-compose"
-brew "docker-machine"
-brew "docker-swarm"
-
 # DevOps
 brew "awscli"
 brew "ansible"
 brew "terraform"
-
+cask "google-cloud-sdk"
 
 # Language
 brew "elixir"
