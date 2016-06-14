@@ -9,3 +9,8 @@ source '/Users/wei/google-cloud-sdk/completion.zsh.inc'
 
 export NVM_DIR="/Users/wei/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+# Source zim
+if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
+  source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
+fi

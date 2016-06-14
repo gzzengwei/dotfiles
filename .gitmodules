@@ -1,3 +1,6 @@
 [submodule "laptop"]
 	path = laptop
 	url = git@github.com:thoughtbot/laptop.git
+[submodule "zim"]
+	path = zim
+	url = git@github.com:Eriner/zim.git
