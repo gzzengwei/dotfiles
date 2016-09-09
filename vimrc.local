@@ -21,6 +21,9 @@ nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 " map NERDTreeFind
 map <leader>r :NERDTreeFind<cr>
 
+" map RuboCop
+map <leader><leader>r :RuboCop<cr>
+
 " map shortcuts
 map <C-s> <esc>:w<CR>
 imap <C-s> <esc>:w<CR>
