@@ -8,3 +8,5 @@ export NVM_DIR="$HOME/.nvm"
 if [[ -s ${ZDOTDIR:-${HOME}}/.zim/init.zsh ]]; then
   source ${ZDOTDIR:-${HOME}}/.zim/init.zsh
 fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

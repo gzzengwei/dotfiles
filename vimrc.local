@@ -15,8 +15,8 @@ map <F5> <Plug>(xmpfilter-run)
 " paste and re-yank last yank 
 xnoremap p pgvy
 
-" bind K to grep word under cursor
-nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+" bind K to FZF word under cursor
+nnoremap K :Ag <C-R><C-W><CR>
 
 " map NERDTreeFind
 map <leader>r :NERDTreeFind<cr>
@@ -35,3 +35,30 @@ map <C-y> "+y
 
 " Python
 let g:python_host_prog = '/usr/local/bin/python'
+
+" neomake
+let g:neomake_ruby_enabled_makers = ['rubocop']
+let g:neomake_javascript_enabled_makers = ['eslint']
+let g:neomake_coffeescript_enabled_makers = ['coffeelint']
+let g:neomake_haml_enabled_makers = ['hamllint']
+let g:neomake_elixir_enabled_makers = ['mix', 'credo']
+
+" Gundo
+nnoremap <F5> :GundoToggle<CR>
+
+let g:elm_format_autosave = 1
+
+" React
+let g:jsx_ext_required = 0 " Allow JSX in normal JS files
+
+" vim-airline
+let g:airline_theme = 'powerlineish'
+let g:airline#extensions#syntastic#enabled = 1
+let g:airline#extensions#branch#enabled = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tagbar#enabled = 1
+let g:airline_skip_empty_sections = 1
+let g:elm_format_autosave = 1
+
+" deoplete
+let g:deoplete#enable_at_startup = 1

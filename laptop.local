@@ -43,6 +43,7 @@ brew "p7zip"
 brew "ack"
 brew "tree"
 brew "pandoc"
+brew "fzf"
 EOF
 
 echo "Cleaning up old Homebrew formulae ..."

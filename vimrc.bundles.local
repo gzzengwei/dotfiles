@@ -17,17 +17,18 @@ Plug 'shutnik/jshint2.vim'
 " Robocop
 Plug 'ngmy/vim-rubocop'
 
-" YouComepleteMe
-Plug 'Valloric/YouCompleteMe'
-
 " Nerd Tree
 Plug 'scrooloose/nerdtree'
-
-" Ctrl-P
-Plug 'kien/ctrlp.vim'
 
 " Fugitive
 Plug 'tpope/vim-fugitive'
 
 " syntastic
 Plug 'scrooloose/syntastic'
+
+" Deoplete
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
+" fzf
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
