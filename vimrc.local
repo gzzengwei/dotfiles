@@ -8,6 +8,11 @@ let g:solarized_contrast = "high"
 let g:solarized_termcolors=16
 colorscheme solarized
 
+augroup vimrcEx
+  autocmd!
+  autocmd! BufWritePost * Neomake " auto neomake when file save
+augroup END
+
 " xmpfilter mapping
 map <F4> <Plug>(xmpfilter-mark)
 map <F5> <Plug>(xmpfilter-run)
