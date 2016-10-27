@@ -1,5 +1,6 @@
 " text width
 set textwidth=120
+set expandtab
 
 " Color scheme
 set background=dark
@@ -22,6 +23,7 @@ xnoremap p pgvy
 
 " bind K to FZF word under cursor
 nnoremap K :Ag <C-R><C-W><CR>
+nnoremap <leader>a :Ag!<space>
 
 " map NERDTreeFind
 map <leader>r :NERDTreeFind<cr>
