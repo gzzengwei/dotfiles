@@ -15,6 +15,10 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'walm/jshint.vim'
 Plug 'shutnik/jshint2.vim'
 
+" React
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+
 " Robocop
 Plug 'ngmy/vim-rubocop'
 
@@ -41,3 +45,6 @@ Plug 'sjl/gundo.vim'
 Plug 'elmcast/elm-vim'
 Plug 'elixir-lang/vim-elixir'
 Plug 'slashmili/alchemist.vim'
+
+" csv
+Plug 'chrisbra/csv.vim'
