@@ -1,3 +1,6 @@
+" Un-Plug
+delcom UnPlug
+
 " text width
 set textwidth=120
 set expandtab

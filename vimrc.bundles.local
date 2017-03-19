@@ -1,3 +1,8 @@
+" Disable
+UnPlug 'kien/ctrlp.vim'
+UnPlug 'vim-scripts/tComment'
+UnPlug 'scrooloose/syntastic'
+
 " color
 Plug 'altercation/vim-colors-solarized'
 
