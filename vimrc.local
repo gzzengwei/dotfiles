@@ -27,6 +27,13 @@ xnoremap p pgvy
 " bind K to FZF word under cursor
 nnoremap K :Ag <C-R><C-W><CR>
 nnoremap <leader>a :Ag!<space>
+" Fuzzy-find with fzf
+map <C-p> :Files<cr>
+nmap <C-p> :Files<cr>
+map <C-b> :Buffers<cr>
+nmap <C-b> :Buffers<cr>
+" View commits in fzf
+nmap <Leader>c :Commits<cr>
 
 " map NERDTreeFind
 map <leader>r :NERDTreeFind<cr>
