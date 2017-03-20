@@ -12,6 +12,9 @@ Plug 'altercation/vim-colors-solarized'
 
 " Ag
 Plug 'rking/ag.vim'
+" airline
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 " Comment
 Plug 'scrooloose/nerdcommenter'
