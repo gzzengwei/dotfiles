@@ -9,9 +9,6 @@ Plug 'altercation/vim-colors-solarized'
 " powerline
 "Plug 'Lokaltog/vim-powerline'
 "Plug 'stephenmckinney/vim-solarized-powerline'
-
-" Ag
-Plug 'rking/ag.vim'
 " airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
