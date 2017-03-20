@@ -16,9 +16,8 @@ Plug 'vim-airline/vim-airline-themes'
 " Comment
 Plug 'scrooloose/nerdcommenter'
 
-" JS hint
-Plug 'walm/jshint.vim'
-Plug 'shutnik/jshint2.vim'
+" ESlint
+Plug 'eslint/eslint'
 
 " React
 Plug 'pangloss/vim-javascript'
