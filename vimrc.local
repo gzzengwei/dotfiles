@@ -52,6 +52,7 @@ map <C-y> "+y
 
 " Python
 let g:python_host_prog = '/usr/local/bin/python'
+let g:python3_host_prog = '/usr/local/bin/python3'
 
 " neomake
 let g:neomake_ruby_enabled_makers = ['rubocop']
