@@ -1,7 +1,16 @@
+# direnv
 eval "$(direnv hook zsh)"
+
+# tmuxinator
 source ~/.bin/tmuxinator.zsh
 
+# nvm
 export NVM_DIR="$HOME/.nvm"
 . "$(brew --prefix nvm)/nvm.sh"
 
+# fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# zplug
+[ -f ~/.zshrc.zplug ] && source ~/.zshrc.zplug
+
