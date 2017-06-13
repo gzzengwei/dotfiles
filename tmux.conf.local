@@ -1,4 +1,4 @@
-unbind C-a
+unbind C-s
 set -g prefix C-b
 setw -g aggressive-resize off
 
@@ -19,9 +19,11 @@ set -g @plugin 'tmux-plugins/tmux-sensible'
 
 # Initializes TMUX plugin manager.
 # Keep this line at the very bottom of tmux.conf.
-# run-shell '~/.tmux/plugins/tpm/tpm'
+run-shell '~/.tmux/plugins/tpm/tpm'
 ## --  from tpm  -- ###
 
 # sync pane
 bind a setw synchronize-panes
 
+# ESC corresponding timeout
+set -g escape-time 10
