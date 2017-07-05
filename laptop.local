@@ -45,6 +45,7 @@ brew "tree"
 brew "pandoc"
 brew "fzf"
 brew "zplug"
+brew "reattach-to-user-namespace"
 EOF
 
 echo "Cleaning up old Homebrew formulae ..."

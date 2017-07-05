@@ -5,6 +5,8 @@ delcom UnPlug
 set textwidth=120
 set expandtab
 
+set clipboard=unnamed
+
 " Color scheme
 set background=dark
 let g:solarized_visibility = "high"

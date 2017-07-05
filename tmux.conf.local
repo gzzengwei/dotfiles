@@ -4,6 +4,7 @@ setw -g aggressive-resize off
 
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-yank'
 
 ## --  from tpm  -- ###
 # List of plugins 
@@ -27,3 +28,7 @@ bind a setw synchronize-panes
 
 # ESC corresponding timeout
 set -g escape-time 10
+
+# fix clipboard
+set -g default-shell $SHELL
+set -g default-command "reattach-to-user-namespace -l ${SHELL}"
