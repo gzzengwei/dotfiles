@@ -13,4 +13,17 @@ export NVM_DIR="$HOME/.nvm"
 
 # zplug
 [ -f ~/.zshrc.zplug ] && source ~/.zshrc.zplug
+eval "$(rbenv init - --no-rehash)"
 
+# add paths
+target_paths="
+/usr/local/bin
+$HOME/.bin
+"
+
+for target_path in $target_paths
+do
+  if [[ ! "$PATH" == *"$target_path"* ]]; then
+    export PATH="$target_path:$PATH"
+  fi
+done
