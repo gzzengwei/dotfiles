@@ -6,34 +6,24 @@ UnPlug 'scrooloose/syntastic'
 " color
 Plug 'altercation/vim-colors-solarized'
 
-" powerline
-"Plug 'Lokaltog/vim-powerline'
-"Plug 'stephenmckinney/vim-solarized-powerline'
-" airline
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-
 " Comment
 Plug 'scrooloose/nerdcommenter'
 
 " ESlint
-Plug 'eslint/eslint'
+" Plug 'eslint/eslint'
 
 " React
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
+
+" Vue
+Plug 'posva/vim-vue'
 
 " Robocop
 Plug 'ngmy/vim-rubocop'
 
 " Nerd Tree
 Plug 'scrooloose/nerdtree'
-
-" Fugitive
-Plug 'tpope/vim-fugitive'
-
-" neomake
-Plug 'neomake/neomake'
 
 " Deoplete
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -52,3 +42,10 @@ Plug 'slashmili/alchemist.vim'
 
 " csv
 Plug 'chrisbra/csv.vim'
+
+" ALE
+Plug 'w0rp/ale'
+
+" RipGrep
+Plug 'jremmen/vim-ripgrep'
+

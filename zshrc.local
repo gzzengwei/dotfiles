@@ -1,29 +1,11 @@
 # direnv
 eval "$(direnv hook zsh)"
 
-# tmuxinator
-source ~/.bin/tmuxinator.zsh
+[[ -f ~/.zshrc.zplug ]] && source ~/.zshrc.zplug
 
-# nvm
-export NVM_DIR="$HOME/.nvm"
-. "$(brew --prefix nvm)/nvm.sh"
+[[ -f ~/.zshrc.env_vars ]] && source ~/.zshrc.env_vars
 
-# fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# asdf
+[[ -f ~/.asdf/asdf.sh ]] && source ~/.asdf/asdf.sh
+[[ -f ~/.asdf/completions/asdf.bash ]] && source ~/.asdf/completions/asdf.bash
 
-# zplug
-[ -f ~/.zshrc.zplug ] && source ~/.zshrc.zplug
-eval "$(rbenv init - --no-rehash)"
-
-# add paths
-target_paths="
-/usr/local/bin
-$HOME/.bin
-"
-
-for target_path in $target_paths
-do
-  if [[ ! "$PATH" == *"$target_path"* ]]; then
-    export PATH="$target_path:$PATH"
-  fi
-done

@@ -1,3 +1,6 @@
+" set Home
+let home_dir = $HOME
+
 " Un-Plug
 delcom UnPlug
 
@@ -14,11 +17,6 @@ let g:solarized_contrast = "high"
 let g:solarized_termcolors=16
 colorscheme solarized
 
-augroup vimrcEx
-  autocmd!
-  autocmd! BufWritePost * Neomake " auto neomake when file save
-augroup END
-
 " xmpfilter mapping
 map <F4> <Plug>(xmpfilter-mark)
 map <F5> <Plug>(xmpfilter-run)
@@ -28,6 +26,8 @@ xnoremap p pgvy
 
 " bind K to FZF word under cursor
 nnoremap K :Ag <C-R><C-W><CR>
+nnoremap F :Rg <C-R><C-W><CR>
+
 nnoremap <leader>a :Ag!<space>
 " Fuzzy-find with fzf
 map <C-p> :Files<cr>
@@ -53,15 +53,18 @@ map <C-v> <esc>"+p
 map <C-y> "+y
 
 " Python
-let g:python_host_prog = '/usr/local/bin/python'
-let g:python3_host_prog = '/usr/local/bin/python3'
+let g:python_host_prog = home_dir . '/.asdf/shims/python'
+let g:python3_host_prog = home_dir . '/.asdf/shims/python'
 
 " neomake
-let g:neomake_ruby_enabled_makers = ['rubocop']
-let g:neomake_javascript_enabled_makers = ['eslint']
-let g:neomake_coffeescript_enabled_makers = ['coffeelint']
-let g:neomake_haml_enabled_makers = ['hamllint']
-let g:neomake_elixir_enabled_makers = ['mix', 'credo']
+"let g:neomake_ruby_enabled_makers = ['rubocop']
+"let g:neomake_javascript_enabled_makers = ['standard']
+"let g:neomake_coffeescript_enabled_makers = ['coffeelint']
+"let g:neomake_haml_enabled_makers = ['hamllint']
+"let g:neomake_elixir_enabled_makers = ['mix', 'credo']
+
+" deoplete
+let g:deoplete#enable_at_startup = 1
 
 " Gundo
 nnoremap <F5> :GundoToggle<CR>
@@ -80,5 +83,15 @@ let g:airline#extensions#tagbar#enabled = 1
 let g:airline_skip_empty_sections = 1
 let g:elm_format_autosave = 1
 
-" deoplete
-let g:deoplete#enable_at_startup = 1
+" Enable completion where available.
+let g:ale_completion_enabled = 1
+let g:ale_sign_column_always = 1
+let g:airline#extensions#ale#enabled = 1
+let g:ale_linters = {
+\   'javascript': ['standard'],
+\   'jsx': ['eslint'],
+\   'ruby': ['rubocop'],
+\   'coffee': ['coffeelint'],
+\   'haml': ['haml-lint'],
+\   'elixir': ['credo'],
+\}

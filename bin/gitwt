@@ -1,0 +1,16 @@
+#!/bin/bash
+if [ -z "$2" ]
+  then
+    echo "command ([add del]) and branch name are required";
+  else
+    case "$1" in
+      add)
+        echo "adding worktree $2" ;
+        git worktree add -b $2 ./$2 ;;
+      del)
+        echo "deleting worktree $2" ;
+        rm -rf ./$2 && git worktree prune && git branch -d $2 ;;
+      *)
+        echo "nothing" ;;
+    esac
+fi
