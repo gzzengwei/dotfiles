@@ -1,15 +1,24 @@
 #!/bin/bash
-if [ -z "$2" ]
+
+action=${1}
+work_dir=${2}
+branch_name=${3:-$work_dir}
+
+if [ -z "$work_dir" ]
   then
-    echo "command ([add del]) and branch name are required";
+    echo "command ([add del track]) and branch name are required";
   else
-    case "$1" in
+    case "$action" in
+      track)
+        echo "tracking remote worktree $branch_name" ;
+        git fetch
+        git worktree add --track -b $branch_name ./$work_dir origin/$branch_name ;;
       add)
-        echo "adding worktree $2" ;
-        git worktree add -b $2 ./$2 ;;
+        echo "adding worktree $work_dir" ;
+        git worktree add -b $branch_name ./$work_dir ;;
       del)
-        echo "deleting worktree $2" ;
-        rm -rf ./$2 && git worktree prune && git branch -d $2 ;;
+        echo "deleting worktree $work_dir" ;
+        rm -rf ./$work_dir && git worktree prune && git branch -D $branch_name  ;;
       *)
         echo "nothing" ;;
     esac
