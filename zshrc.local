@@ -7,5 +7,15 @@ eval "$(direnv hook zsh)"
 
 # asdf
 [[ -f ~/.asdf/asdf.sh ]] && source ~/.asdf/asdf.sh
-[[ -f ~/.asdf/completions/asdf.bash ]] && source ~/.asdf/completions/asdf.bash
+
+# [[ -f ~/.asdf/completions/asdf.bash ]] && source ~/.asdf/completions/asdf.bash
+
+[[ -f ~/.zshrc.func ]] && source ~/.zshrc.func
+
+[[ -f ~/.zshrc.alias ]] && source ~/.zshrc.alias
+
+[[ -f ~/.zshrc.tools ]] && source ~/.zshrc.tools
+
+[[ -f ~/.zshrc.path ]] && source ~/.zshrc.path
+
 

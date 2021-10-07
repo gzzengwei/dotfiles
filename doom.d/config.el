@@ -54,3 +54,4 @@
 ;; they are implemented.
 
 
+(xclip-mode 1)

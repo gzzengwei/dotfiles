@@ -12,10 +12,16 @@ if [ -z "$work_dir" ]
       track)
         echo "tracking remote worktree $branch_name" ;
         git fetch
-        git worktree add --track -b $branch_name ./$work_dir origin/$branch_name ;;
+        git worktree add --track -b $branch_name ./$work_dir origin/$branch_name ;
+	[[ -f ./.envrc ]] && cp ./.envrc $work_dir/.envrc ;
+	pushd ./$work_dir;
+	direnv allow;;
       add)
         echo "adding worktree $work_dir" ;
-        git worktree add -b $branch_name ./$work_dir ;;
+        git worktree add -b $branch_name ./$work_dir ;
+	[[ -f ./.envrc ]] && cp ./.envrc $work_dir/.envrc ;
+	pushd ./$work_dir;
+	direnv allow;;
       del)
         echo "deleting worktree $work_dir" ;
         rm -rf ./$work_dir && git worktree prune && git branch -D $branch_name  ;;
@@ -23,3 +29,4 @@ if [ -z "$work_dir" ]
         echo "nothing" ;;
     esac
 fi
+

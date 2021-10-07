@@ -56,7 +56,7 @@ rm -rfv ~/Library/Caches/Google/Chrome/Default/Cache/* &>/dev/null
 rm -rfv ~/Library/Caches/Google/Chrome\ Canary/Default/Cache/* &>/dev/null
 
 echo 'Cleanup Yarn'
-rm -rfv ~/Library/Caches/Yarn/* &>/dev/null
+ [[ -d ~/Library/Caches/Yarn ]] && rm -rfv ~/Library/Caches/Yarn/* &>/dev/null
 
 echo 'Purge inactive memory...'
 sudo purge

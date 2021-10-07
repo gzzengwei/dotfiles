@@ -1,0 +1,3 @@
+alias ec='emacsclient -nw'
+alias code='/Applications/VSCodium.app/Contents/Resources/app/bin/codium'
+

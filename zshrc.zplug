@@ -6,8 +6,8 @@ zplug "modules/git", from:prezto
 zplug 'rupa/z', use:z.sh
 
 # pure theme
-zplug 'mafredri/zsh-async', from:github
-zplug 'sindresorhus/pure', use:pure.zsh, from:github, as:theme
+zplug "mafredri/zsh-async", from:"github", use:"async.zsh"
+# zplug 'sindresorhus/pure', use:pure.zsh, from:github, as:theme
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check --verbose; then
