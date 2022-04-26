@@ -1,0 +1,4 @@
+[[ -f ~/.zshrc.zinit ]] && source ~/.zshrc.zinit
+[[ -f ~/.zshrc.tools ]] && source ~/.zshrc.tools
+[[ -f ~/.zshrc.paths ]] && source ~/.zshrc.paths
+[[ -f ~/.zshrc.alias ]] && source ~/.zshrc.alias
