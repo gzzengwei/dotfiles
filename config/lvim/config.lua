@@ -59,7 +59,7 @@ lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
-lvim.builtin.nvimtree.show_icons.git = 0
+lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
@@ -68,6 +68,7 @@ lvim.builtin.treesitter.ensure_installed = {
   "css",
   "elixir",
   "java",
+  "heex",
   "javascript",
   "json",
   "lua",
@@ -148,6 +149,7 @@ linters.setup {
 -- Additional Plugins
 lvim.plugins = {
   { "folke/tokyonight.nvim" },
+  { "mg979/vim-visual-multi" },
   {
     "folke/trouble.nvim",
     cmd = "TroubleToggle",
@@ -167,3 +169,13 @@ lvim.keys.normal_mode["<A-j>"] = false
 -- lvim.keys.visual_block_mode["<A-k>"] = false
 -- lvim.keys.visual_block_mode["J"] = false
 -- lvim.keys.visual_block_mode["K"] = false
+
+-- search word on current cursor
+lvim.builtin.which_key.mappings["sw"] = {
+  "<cmd>Telescope grep_string<CR>", "Word"
+}
+
+-- search text in opened files
+lvim.builtin.which_key.mappings["so"] = {
+  "<cmd>lua require('telescope.builtin').live_grep({grep_open_files=true})<CR>", "Text in open files"
+}
