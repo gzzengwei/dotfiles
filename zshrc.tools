@@ -1,2 +1,8 @@
+# starship prompts
 eval "$(starship init zsh)"
+
+# init dotenv
 eval "$(direnv hook zsh)"
+
+# init asdf
+. $HOME/.asdf/asdf.sh
