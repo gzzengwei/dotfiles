@@ -1,8 +1,14 @@
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 export PATH="/Users/wei/Projects/elixir/elixir-ls:$PATH"
+export PATH="$HOME/.tmuxifier/bin:$PATH"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
+if [ -n "$TMUX_PATH" ]; then
+  export PATH="$TMUX_PATH"
+fi
+
+export PATH="/opt/homebrew/opt/mysql-client@5.7/bin:$PATH"
