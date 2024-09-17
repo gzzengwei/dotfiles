@@ -3,6 +3,7 @@
 [[ -f ~/.zshrc.paths ]] && source ~/.zshrc.paths
 [[ -f ~/.zshrc.tools ]] && source ~/.zshrc.tools
 [[ -f ~/.zshrc.env ]] && source ~/.zshrc.env
+[[ -f ~/.zshrc.env.local ]] && source ~/.zshrc.env.local
 
 export TMUX_PATH="$PATH"
 
