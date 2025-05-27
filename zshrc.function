@@ -1,0 +1,2 @@
+# git track remote branch to local
+gtr () { git switch --track "origin/$1" "${@:2}"; }
