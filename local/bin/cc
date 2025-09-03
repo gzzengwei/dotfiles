@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROFILE_DIR="${CLAUDE_PROFILE_DIR:-$HOME/.config/claude/profiles.d}"
+
+usage() {
+  echo "Usage:"
+  echo "  cc [-p profile] [claude args...]"
+  echo "  cc --list"
+  echo "Examples:"
+  echo "  cc --list"
+  echo "  cc -p kimi \"Hello\""
+  echo "  cc \"Hello (use current env)\""
+  exit 1
+}
+
+profile=""
+args=()
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -p|--profile) profile="$2"; shift 2 ;;
+    --list|-l)
+      ls -1 "${PROFILE_DIR}"/*.env 2>/dev/null | sed 's#.*/##; s#\.env$##'
+      exit 0
+      ;;
+    -h|--help) usage ;;
+    *) args+=("$1"); shift ;;
+  esac
+done
+
+# No profile → run with current session env (no changes).
+if [[ -z "$profile" ]]; then
+  echo "cc: using current environment"
+  exec claude "${args[@]}"
+fi
+
+file="${PROFILE_DIR}/${profile}.env"
+if [[ ! -f "$file" ]]; then
+  echo "cc: profile not found: $profile"
+  usage
+fi
+
+echo "cc: using profile -> $profile"
+
+# Collect only the variables defined in the profile (names before '=').
+# This supports optional vars like ANTHROPIC_MODEL / ANTHROPIC_SMALL_FAST_MODEL.
+mapfile -t _cc_vars < <(grep -E '^[A-Za-z_][A-Za-z0-9_]*=' "$file" | sed 's/=.*//' | xargs -n1 printf '%s\n' | sort -u)
+
+# Source the profile in the current process to allow $EXPANSION from your session,
+# but we won't export these to your shell; we only pass them to the child process.
+set -a
+# shellcheck disable=SC1090
+source "$file"
+set +a
+
+# Build KEY=VALUE pairs only for vars defined in the profile
+_cc_env=()
+for v in "${_cc_vars[@]}"; do
+  # if unset, skip; otherwise pass it along
+  if [[ -n "${!v-}" ]]; then
+    _cc_env+=("$v=${!v}")
+  fi
+done
+
+# Launch claude in a clean environment, passing only what we need.
+exec env -i \
+  PATH="$PATH" \
+  HOME="$HOME" \
+  SHELL="$SHELL" \
+  CLAUDE_PROFILE="$profile" \
+  "${_cc_env[@]}" \
+  claude "${args[@]}"
