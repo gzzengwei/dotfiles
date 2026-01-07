@@ -1,6 +1,3 @@
 alias ec='emacsclient -nw'
-alias k9sp='aws-vault exec split-prod-dev -- k9s --context prod'
-alias k9spp='aws-vault exec split-preprod-dev -- k9s --context preprod'
-alias k9ss='aws-vault exec split-sandbox-dev -- k9s --context sandbox'
-alias k9ssb='aws-vault exec split-sandbox-dev -- k9s --context zepto_sandbox_blue'
-alias k9sht='k9s --context kubernetes-kubernetes'
+alias bx='bundle exec'
+alias gnvim="nvim \$(git status --porcelain | awk '/^[ MARC][MD]/ {print \$2}')"

@@ -10,6 +10,6 @@ autoload -Uz _zinit
 # zinit ice svn
 zinit snippet PZTM::git
 
-zinit light rupa/z
+#zinit light rupa/z
 zinit light zsh-users/zsh-completions
 zinit light starship/starship

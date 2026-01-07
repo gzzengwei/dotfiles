@@ -10,3 +10,7 @@ if [ -n "$TMUX_PATH" ]; then
   export PATH="$TMUX_PATH"
 fi
 
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+
+# opencode
+export PATH="$HOME/.opencode/bin:$PATH"
