@@ -22,18 +22,52 @@ setup_worktree_folder() {
 # Set the parent directory for worktrees based on current project
 GIT_WORKTREE_FOLDER=$(setup_worktree_folder)
 
+# Common config files recognized by the suggest command
+declare -a COMMON_CONFIG_FILES=(
+  ".envrc"
+  ".tool-versions"
+  ".nvmrc"
+  ".python-version"
+  ".ruby-version"
+  ".go-version"
+  ".rust-toolchain.toml"
+  ".miserc.toml"
+  ".mise.toml"
+  ".editorconfig"
+  ".eslintrc"
+  ".prettierrc"
+  ".env.example"
+  ".dockerignore"
+  "Makefile"
+)
+
 usage() {
   echo "Usage: gitwt <action> <branch_name> [worktree_folder]"
-  echo "Manage git worktrees"
+  echo "Manage git worktrees with config file copying"
   echo ""
   echo "Actions:"
   echo "  add     Create a new worktree for specified branch"
   echo "  track   Create a new worktree tracking a remote branch"
   echo "  delete  Remove a worktree and its directory"
+  echo "  init    Create .gitwt config file in repo root"
+  echo "  suggest Show common config files found in this repo"
   echo ""
   echo "Arguments:"
   echo "  branch_name      Name of the git branch (can include prefix, e.g., feature/foo)"
   echo "  worktree_folder  Optional: Custom folder name (defaults to branch name)"
+  echo ""
+  echo "Config File (.gitwt):"
+  echo "  Place in repo root to specify which files to copy to new worktrees"
+  echo "  Format: git config syntax with gitwt.copy.include sections"
+  echo ""
+  echo "Example .gitwt:"
+  echo "  [gitwt.copy]"
+  echo "      include = .envrc"
+  echo "      include = .tool-versions"
+  echo "      include = .nvmrc"
+  echo ""
+  echo "  [gitwt.exclude]"
+  echo "      exclude = .env.local"
   echo ""
   echo "Worktree Location:"
   echo "  Worktrees will be created under: $GIT_WORKTREE_FOLDER/<branch_name>"
@@ -87,7 +121,20 @@ add_worktree() {
   # Ensure the parent directory exists
   ensure_directory "$(dirname "$worktree_path")"
 
-  git worktree add "$worktree_path" "$branch_name"
+  if ! git worktree add "$worktree_path" "$branch_name"; then
+    echo "Error: Failed to create worktree"
+    exit 1
+  fi
+
+  # Load .gitwt configuration
+  local git_root=$(get_git_root)
+  load_gitwt_config "$git_root"
+
+  # Copy config files if configured
+  if [ -n "$GITWT_INCLUDES" ]; then
+    copy_config_files "$git_root" "$worktree_path"
+  fi
+
   echo "Worktree created at: $worktree_path"
 }
 
@@ -107,11 +154,26 @@ track_worktree() {
 
   # If a local branch already exists, just use it; otherwise create it to track the remote
   if git show-ref --verify --quiet "refs/heads/$branch_name"; then
-    git worktree add "$worktree_path" "$branch_name"
+    if ! git worktree add "$worktree_path" "$branch_name"; then
+      echo "Error: Failed to create worktree"
+      exit 1
+    fi
   else
     # Create a local branch from the remote ref (works with deep paths)
     git fetch origin "$branch_name:$branch_name"
-    git worktree add "$worktree_path" "$branch_name"
+    if ! git worktree add "$worktree_path" "$branch_name"; then
+      echo "Error: Failed to create worktree"
+      exit 1
+    fi
+  fi
+
+  # Load .gitwt configuration
+  local git_root=$(get_git_root)
+  load_gitwt_config "$git_root"
+
+  # Copy config files if configured
+  if [ -n "$GITWT_INCLUDES" ]; then
+    copy_config_files "$git_root" "$worktree_path"
   fi
 
   echo "Worktree created at: $worktree_path"
@@ -157,10 +219,244 @@ delete_worktree() {
   fi
 }
 
+# Load configuration from .gitwt file
+load_gitwt_config() {
+  local git_root="$1"
+  local config_file="${git_root}/.gitwt"
+
+  GITWT_INCLUDES=""
+  GITWT_EXCLUDES=""
+
+  if [ -f "$config_file" ]; then
+    while IFS= read -r pattern; do
+      [ -n "$pattern" ] && GITWT_INCLUDES="${GITWT_INCLUDES}${pattern}"$'\n'
+    done < <(git config -f "$config_file" --get-all gitwt.copy.include 2>/dev/null || true)
+
+    while IFS= read -r pattern; do
+      [ -n "$pattern" ] && GITWT_EXCLUDES="${GITWT_EXCLUDES}${pattern}"$'\n'
+    done < <(git config -f "$config_file" --get-all gitwt.exclude 2>/dev/null || true)
+  fi
+}
+
+# Check if a file should be excluded based on exclusion patterns
+is_excluded() {
+  local file="$1"
+
+  while IFS= read -r pattern; do
+    [ -z "$pattern" ] && continue
+    case "$file" in
+      $pattern) return 0 ;;
+    esac
+  done <<< "$GITWT_EXCLUDES"
+
+  return 1
+}
+
+# Copy config files from source to destination worktree directory
+copy_config_files() {
+  local src_dir="$1"
+  local dst_dir="$2"
+
+  [ -z "$GITWT_INCLUDES" ] && return 0
+
+  local copied_count=0
+  local skipped_count=0
+  local error_count=0
+
+  while IFS= read -r pattern; do
+    [ -z "$pattern" ] && continue
+
+    # Validate pattern (no absolute paths or parent traversal)
+    case "$pattern" in
+      /*|*/../*|../*|*/..|..)
+        echo "Warning: Skipping unsafe pattern: $pattern" >&2
+        error_count=$((error_count + 1))
+        continue
+        ;;
+    esac
+
+    # Check if the pattern specifies a nested path (contains /)
+    if [[ "$pattern" == */* ]]; then
+      # For nested paths, check directly
+      local target_file="$src_dir/$pattern"
+      if [ -e "$target_file" ]; then
+        local rel_path="$pattern"
+        if ! is_excluded "$rel_path"; then
+          if [ ! -d "$target_file" ]; then
+            local dst_file="$dst_dir/$rel_path"
+            if mkdir -p "$(dirname "$dst_file")" 2>/dev/null; then
+              if cp "$target_file" "$dst_file" 2>/dev/null; then
+                copied_count=$((copied_count + 1))
+              else
+                echo "Warning: Failed to copy: $rel_path" >&2
+                error_count=$((error_count + 1))
+              fi
+            else
+              echo "Warning: Failed to create directory for: $rel_path" >&2
+              error_count=$((error_count + 1))
+            fi
+          fi
+        else
+          skipped_count=$((skipped_count + 1))
+        fi
+      else
+        echo "Warning: No files found matching pattern: $pattern" >&2
+      fi
+    else
+      # For patterns with no directory separator, use glob expansion
+      local files_found=0
+      for file in "$src_dir"/$pattern; do
+        [ -e "$file" ] || continue
+        files_found=$((files_found + 1))
+
+        local rel_path="${file#$src_dir/}"
+        if is_excluded "$rel_path"; then
+          skipped_count=$((skipped_count + 1))
+          continue
+        fi
+
+        [ -d "$file" ] && continue
+
+        local dst_file="$dst_dir/$rel_path"
+
+        if ! mkdir -p "$(dirname "$dst_file")" 2>/dev/null; then
+          echo "Warning: Failed to create directory for: $rel_path" >&2
+          error_count=$((error_count + 1))
+          continue
+        fi
+
+        if cp "$file" "$dst_file" 2>/dev/null; then
+          copied_count=$((copied_count + 1))
+        else
+          echo "Warning: Failed to copy: $rel_path" >&2
+          error_count=$((error_count + 1))
+        fi
+      done
+
+      if [ "$files_found" -eq 0 ] && ! [[ "$pattern" == *\** ]]; then
+        echo "Warning: No files found matching pattern: $pattern" >&2
+      fi
+    fi
+  done <<< "$GITWT_INCLUDES"
+
+  if [ "$copied_count" -gt 0 ]; then
+    echo "Copied $copied_count config file(s) to worktree"
+  fi
+  if [ "$skipped_count" -gt 0 ]; then
+    echo "Skipped $skipped_count excluded file(s)"
+  fi
+  if [ "$error_count" -gt 0 ]; then
+    echo "Warning: $error_count error(s) occurred while copying config files" >&2
+  fi
+
+  return 0
+}
+
+# Suggest common config files found in the repository
+suggest_configs() {
+  local git_root="$1"
+  local found_files=()
+
+  for file in "${COMMON_CONFIG_FILES[@]}"; do
+    if [ -f "$git_root/$file" ]; then
+      found_files+=("$file")
+    fi
+  done
+
+  if [ ${#found_files[@]} -eq 0 ]; then
+    echo "No common config files found in repository."
+    echo ""
+    echo "Common config files you might want to use:"
+    printf "  - %s\n" "${COMMON_CONFIG_FILES[@]}"
+  else
+    echo "Found ${#found_files[@]} config file(s) in repository:"
+    printf "  - %s\n" "${found_files[@]}"
+    echo ""
+
+    if [ -f "$git_root/.gitwt" ]; then
+      local already_included=""
+      while IFS= read -r pattern; do
+        [ -z "$pattern" ] && continue
+        for file in "${found_files[@]}"; do
+          if [[ "$file" == $pattern ]]; then
+            already_included="${already_included}${file}"$'\n'
+            break
+          fi
+        done
+      done < <(git config -f "$git_root/.gitwt" --get-all gitwt.copy.include 2>/dev/null || true)
+
+      if [ -n "$already_included" ]; then
+        echo "Already included in .gitwt:"
+        printf "  - %s\n" $already_included
+        echo ""
+
+        local not_included=""
+        for file in "${found_files[@]}"; do
+          local included=false
+          while IFS= read -r inc; do
+            [ -z "$inc" ] && continue
+            [[ "$file" == $inc ]] && { included=true; break; }
+          done <<< "$already_included"
+          $included || not_included="${not_included}${file}"$'\n'
+        done
+
+        if [ -n "$not_included" ]; then
+          echo "Not yet included (consider adding):"
+          printf "  - %s\n" $not_included
+        fi
+      fi
+    fi
+
+    echo ""
+    echo "To include these files in .gitwt, run:"
+    echo "  gitwt init"
+  fi
+}
+
+# Create or update the .gitwt configuration file
+init_gitwt_config() {
+  local git_root="$1"
+  local config_file="${git_root}/.gitwt"
+
+  if [ -f "$config_file" ]; then
+    echo "Config file already exists: $config_file"
+    echo ""
+    suggest_configs "$git_root"
+    return 0
+  fi
+
+  echo "# Git Worktree Config" > "$config_file"
+  echo "# Files listed below will be copied to new worktrees" >> "$config_file"
+  echo "" >> "$config_file"
+  echo "[gitwt.copy]" >> "$config_file"
+
+  local found_any=false
+  for file in "${COMMON_CONFIG_FILES[@]}"; do
+    if [ -f "$git_root/$file" ]; then
+      echo "    include = $file" >> "$config_file"
+      found_any=true
+    fi
+  done
+
+  if ! $found_any; then
+    echo "# Uncomment and add files you want to copy:" >> "$config_file"
+    echo "#     include = .envrc" >> "$config_file"
+    echo "#     include = .tool-versions" >> "$config_file"
+  fi
+
+  echo "" >> "$config_file"
+  echo "[gitwt.exclude]" >> "$config_file"
+  echo "#     exclude = .env.local" >> "$config_file"
+
+  echo "Created .gitwt config file"
+  echo ""
+  suggest_configs "$git_root"
+}
+
 # Main script
 
 # Check for minimum required arguments
-if [ $# -lt 2 ]; then
+if [ $# -lt 1 ]; then
   usage
 fi
 
@@ -168,22 +464,38 @@ action="$1"
 branch_name="$2"
 custom_folder="$3"
 
+# For init and suggest commands, no branch_name or custom_folder is needed
+if [ "$action" != "init" ] && [ "$action" != "suggest" ] && [ $# -lt 2 ]; then
+  usage
+fi
+
 # Validate inputs
 check_git_repo
-
-# Get the worktree path
-worktree_path=$(get_worktree_path "$branch_name" "$custom_folder")
 
 # Process the action
 case "$action" in
 "add")
+  # Get the worktree path
+  worktree_path=$(get_worktree_path "$branch_name" "$custom_folder")
   add_worktree "$branch_name" "$worktree_path"
   ;;
 "track")
+  # Get the worktree path
+  worktree_path=$(get_worktree_path "$branch_name" "$custom_folder")
   track_worktree "$branch_name" "$worktree_path"
   ;;
 "delete")
+  # Get the worktree path
+  worktree_path=$(get_worktree_path "$branch_name" "$custom_folder")
   delete_worktree "$worktree_path"
+  ;;
+"init")
+  git_root=$(get_git_root)
+  init_gitwt_config "$git_root"
+  ;;
+"suggest")
+  git_root=$(get_git_root)
+  suggest_configs "$git_root"
   ;;
 *)
   echo "Error: Invalid action '$action'"
