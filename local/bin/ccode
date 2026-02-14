@@ -4,6 +4,19 @@ set -euo pipefail
 PROFILE_DIR="${CLAUDE_PROFILE_DIR:-$HOME/.config/claude/profiles.d}"
 DEFAULT_PROFILE="bigmodel"
 
+# Load .envrc from the calling directory if it exists
+CALLING_DIR="$(pwd)"
+_envrc_vars=()
+if [[ -f "${CALLING_DIR}/.envrc" ]]; then
+  echo "cc: loading .envrc from ${CALLING_DIR}"
+  # Collect variable names from .envrc (handles both 'VAR=value' and 'export VAR=value')
+  mapfile -t _envrc_vars < <(grep -E '^(export )?[A-Za-z_][A-Za-z0-9_]*=' "${CALLING_DIR}/.envrc" | sed 's/^export //' | sed 's/=.*//' | xargs -n1 printf '%s\n' | sort -u)
+  set -a
+  # shellcheck disable=SC1090
+  source "${CALLING_DIR}/.envrc"
+  set +a
+fi
+
 usage() {
   echo "Usage:"
   echo "  cc [-p profile] [claude args...]"
@@ -59,11 +72,20 @@ source "$file"
 set +a
 
 _cc_env=()
+# Add variables from profile
 for v in "${_cc_vars[@]}"; do
   if [[ -n "${!v-}" ]]; then
     _cc_env+=("$v=${!v}")
   fi
 done
+# Add variables from .envrc
+for v in "${_envrc_vars[@]}"; do
+  if [[ -n "${!v-}" ]]; then
+    _cc_env+=("$v=${!v}")
+  fi
+done
+
+echo "claude bin: $(which claude)"
 
 exec env -i \
   PATH="$PATH" \
